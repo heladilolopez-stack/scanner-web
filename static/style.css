@@ -1,0 +1,966 @@
+/* ============================================================
+   GENERAL
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f3f4f6;
+
+    color: #1f2937;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+header {
+
+    height: 58px;
+
+    background: #111827;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    border-bottom:
+        1px solid #374151;
+}
+
+
+.header-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 19px;
+
+    font-weight: 600;
+}
+
+
+.header-icon {
+
+    font-size: 21px;
+}
+
+
+.header-device {
+
+    font-size: 13px;
+
+    color: #d1d5db;
+}
+
+
+/* ============================================================
+   CONTENEDOR
+   ============================================================ */
+
+.container {
+
+    display: grid;
+
+    grid-template-columns:
+        280px
+        minmax(420px, 1fr)
+        350px;
+
+    gap: 16px;
+
+    padding: 16px;
+
+    max-width: 1550px;
+
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   TARJETAS
+   ============================================================ */
+
+.card {
+
+    background: white;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    padding: 16px;
+
+    box-shadow:
+        0 1px 2px
+        rgba(
+            0,
+            0,
+            0,
+            0.05
+        );
+}
+
+
+.card-title {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    margin-bottom: 15px;
+
+    padding-bottom: 11px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+}
+
+
+/* ============================================================
+   FORMULARIO
+   ============================================================ */
+
+.form-group {
+
+    margin-bottom: 14px;
+}
+
+
+label {
+
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 6px;
+
+    color: #374151;
+}
+
+
+select {
+
+    width: 100%;
+
+    height: 38px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    padding:
+        0 10px;
+
+    background: white;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+
+select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(
+            37,
+            99,
+            235,
+            0.12
+        );
+}
+
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+.button {
+
+    width: 100%;
+
+    min-height: 39px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    padding:
+        8px 12px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+
+    transition:
+        background 0.15s,
+        opacity 0.15s;
+}
+
+
+.button:disabled {
+
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+.button-primary {
+
+    background: #2563eb;
+
+    color: white;
+}
+
+
+.button-primary:hover:not(:disabled) {
+
+    background: #1d4ed8;
+}
+
+
+.button-secondary {
+
+    background: #e5e7eb;
+
+    color: #111827;
+}
+
+
+.button-secondary:hover:not(:disabled) {
+
+    background: #d1d5db;
+}
+
+
+.button-success {
+
+    background: #16a34a;
+
+    color: white;
+}
+
+
+.button-success:hover:not(:disabled) {
+
+    background: #15803d;
+}
+
+
+.button-danger {
+
+    background: #dc2626;
+
+    color: white;
+}
+
+
+.button-danger:hover:not(:disabled) {
+
+    background: #b91c1c;
+}
+
+
+/* ============================================================
+   PREVIEW
+   ============================================================ */
+
+.preview-container {
+
+    min-height: 650px;
+
+    height: 650px;
+
+    background: #e5e7eb;
+
+    border-radius: 6px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    border:
+        1px solid #d1d5db;
+}
+
+
+.image-preview {
+
+    max-width: 100%;
+
+    max-height: 100%;
+
+    width: auto;
+
+    height: auto;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+.pdf-preview {
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+
+    background: white;
+}
+
+
+.pdf-fallback {
+
+    height: 100%;
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+
+    background: white;
+}
+
+
+.pdf-fallback-title {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    margin-bottom: 15px;
+}
+
+
+.empty-preview {
+
+    text-align: center;
+
+    color: #6b7280;
+
+    padding: 30px;
+}
+
+
+.empty-icon {
+
+    font-size: 45px;
+
+    margin-bottom: 10px;
+
+    opacity: 0.7;
+}
+
+
+.empty-title {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    margin-bottom: 6px;
+}
+
+
+.empty-text {
+
+    font-size: 13px;
+
+    color: #6b7280;
+}
+
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+
+.status {
+
+    padding: 11px 12px;
+
+    border-radius: 6px;
+
+    background: #f3f4f6;
+
+    color: #4b5563;
+
+    font-size: 13px;
+
+    line-height: 1.45;
+
+    margin-bottom: 12px;
+}
+
+
+.status-success {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+.status-error {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+/* ============================================================
+   INFORMACIÓN
+   ============================================================ */
+
+.info-box {
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius: 6px;
+
+    padding:
+        8px 11px;
+
+    background: #fafafa;
+
+    margin-bottom: 2px;
+}
+
+
+.info-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding:
+        7px 0;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    font-size: 12px;
+}
+
+
+.info-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.info-row span {
+
+    color: #6b7280;
+}
+
+
+.info-row strong {
+
+    max-width: 190px;
+
+    text-align: right;
+
+    word-break: break-word;
+
+    color: #374151;
+}
+
+
+/* ============================================================
+   SECCIONES
+   ============================================================ */
+
+.section {
+
+    margin-top: 18px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid #e5e7eb;
+}
+
+
+.section-title {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    margin-bottom: 10px;
+}
+
+
+.section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+
+.section-header .section-title {
+
+    margin-bottom: 0;
+}
+
+
+.refresh-button {
+
+    width: 30px;
+
+    height: 30px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 5px;
+
+    background: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    color: #4b5563;
+}
+
+
+.refresh-button:hover {
+
+    background: #f3f4f6;
+}
+
+
+/* ============================================================
+   PDF MULTIPÁGINA
+   ============================================================ */
+
+.pdf-mode-status {
+
+    padding:
+        10px 11px;
+
+    border:
+        1px solid #e5e7eb;
+
+    background: #f9fafb;
+
+    border-radius: 6px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+    margin-bottom: 10px;
+}
+
+
+.pdf-mode-status.active {
+
+    background: #eff6ff;
+
+    border-color: #bfdbfe;
+
+    color: #1e40af;
+}
+
+
+.pdf-pages {
+
+    background: #f9fafb;
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius: 6px;
+
+    padding: 8px;
+
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    margin-bottom: 10px;
+}
+
+
+.pdf-empty {
+
+    padding: 20px 10px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+.pdf-page {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 8px;
+
+    background: white;
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius: 5px;
+
+    margin-bottom: 6px;
+}
+
+
+.pdf-page:last-child {
+
+    margin-bottom: 0;
+}
+
+
+.pdf-page-number {
+
+    min-width: 25px;
+
+    height: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #2563eb;
+
+    color: white;
+
+    border-radius: 4px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+.pdf-page-name {
+
+    font-size: 11px;
+
+    color: #4b5563;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   HISTORIAL
+   ============================================================ */
+
+.history {
+
+    max-height: 340px;
+
+    overflow-y: auto;
+
+    padding-right: 2px;
+}
+
+
+.history-item {
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius: 6px;
+
+    padding: 9px;
+
+    margin-bottom: 8px;
+
+    background: #fafafa;
+}
+
+
+.history-item:last-child {
+
+    margin-bottom: 0;
+}
+
+
+.history-name {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    word-break: break-all;
+
+    margin-bottom: 5px;
+}
+
+
+.history-info {
+
+    font-size: 10px;
+
+    color: #6b7280;
+
+    margin-bottom: 8px;
+}
+
+
+.history-actions {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1fr;
+
+    gap: 5px;
+}
+
+
+.history-button {
+
+    min-height: 30px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 5px;
+
+    background: white;
+
+    color: #374151;
+
+    cursor: pointer;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    padding:
+        5px 4px;
+}
+
+
+.history-button:hover {
+
+    background: #f3f4f6;
+}
+
+
+.history-save {
+
+    border-color: #86efac;
+
+    color: #166534;
+}
+
+
+.history-delete {
+
+    border-color: #fca5a5;
+
+    color: #991b1b;
+}
+
+
+.history-button:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+.history-loading,
+.history-empty,
+.history-error {
+
+    padding:
+        20px 10px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+.history-error {
+
+    color: #991b1b;
+}
+
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
+
+.history::-webkit-scrollbar,
+.pdf-pages::-webkit-scrollbar {
+
+    width: 6px;
+}
+
+
+.history::-webkit-scrollbar-thumb,
+.pdf-pages::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 5px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1150px) {
+
+    .container {
+
+        grid-template-columns:
+            260px
+            minmax(350px, 1fr);
+
+    }
+
+
+    .right-column {
+
+        grid-column:
+            1 / -1;
+
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    header {
+
+        padding:
+            0 14px;
+
+    }
+
+
+    .header-device {
+
+        display: none;
+
+    }
+
+
+    .container {
+
+        grid-template-columns:
+            1fr;
+
+        padding: 10px;
+
+    }
+
+
+    .right-column {
+
+        grid-column:
+            auto;
+
+    }
+
+
+    .preview-container {
+
+        height: 500px;
+
+        min-height: 500px;
+
+    }
+
+}

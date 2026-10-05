@@ -1,0 +1,18 @@
+services:
+  scanner-web:
+    image: scanner-web:latest
+ 
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: scanner-web
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./scans:/app/scans
+      - ./temp:/app/temp
+
+    restart: unless-stopped

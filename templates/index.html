@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Scanner Web
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="header-title">
+
+        <span class="header-icon">
+            🖨️
+        </span>
+
+        <span>
+            Scanner Web
+        </span>
+
+    </div>
+
+
+    <div class="header-device">
+
+        Brother DCP-T220
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+
+    <!-- ====================================================
+         IZQUIERDA
+         ==================================================== -->
+
+    <section class="card left-column">
+
+        <div class="card-title">
+
+            Configuración
+
+        </div>
+
+
+        <form
+            id="scanForm"
+            method="POST"
+            action="/"
+        >
+
+
+            <!-- ESCÁNER -->
+
+            <div class="form-group">
+
+                <label for="scanner">
+
+                    Escáner
+
+                </label>
+
+
+                <select
+                    id="scanner"
+                    name="scanner"
+                >
+
+                    <option value="brother5:bus1;dev2">
+
+                        Brother DCP-T220
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- FUENTE -->
+
+            <div class="form-group">
+
+                <label for="source">
+
+                    Fuente
+
+                </label>
+
+
+                <select
+                    id="source"
+                    name="source"
+                >
+
+                    <option value="FlatBed">
+
+                        Flatbed
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- MODO -->
+
+            <div class="form-group">
+
+                <label for="mode">
+
+                    Modo
+
+                </label>
+
+
+                <select
+                    id="mode"
+                    name="mode"
+                >
+
+                    <option value="True Gray">
+
+                        True Gray
+
+                    </option>
+
+
+                    <option value="24bit Color[Fast]">
+
+                        Color
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- DPI -->
+
+            <div class="form-group">
+
+                <label for="dpi">
+
+                    Resolución
+
+                </label>
+
+
+                <select
+                    id="dpi"
+                    name="dpi"
+                >
+
+                    <option value="300">
+
+                        300 DPI
+
+                    </option>
+
+
+                    <option value="600">
+
+                        600 DPI
+
+                    </option>
+
+
+                    <option value="1200">
+
+                        1200 DPI
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- FORMATO -->
+
+            <div class="form-group">
+
+                <label for="format">
+
+                    Formato
+
+                </label>
+
+
+                <select
+                    id="format"
+                    name="format"
+                >
+
+                    <option value="png">
+
+                        PNG
+
+                    </option>
+
+
+                    <option value="jpeg">
+
+                        JPEG
+
+                    </option>
+
+
+                    <option value="pdf">
+
+                        PDF
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="button button-primary scan-button"
+            >
+
+                Escanear
+
+            </button>
+
+
+        </form>
+
+
+    </section>
+
+
+
+    <!-- ====================================================
+         CENTRO
+         ==================================================== -->
+
+    <section class="card center-column">
+
+        <div class="card-title">
+
+            Vista previa
+
+        </div>
+
+
+        <div
+            id="previewContainer"
+            class="preview-container"
+        >
+
+
+            {% if scanned and filename %}
+
+
+                {% if file_format == "pdf" %}
+
+                    <object
+                        class="pdf-preview"
+                        data="/preview/{{ filename }}"
+                        type="application/pdf"
+                    >
+
+                        <div class="pdf-fallback">
+
+                            <div class="pdf-fallback-title">
+
+                                PDF generado correctamente
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                onclick="openFile('{{ filename }}')"
+                            >
+
+                                Abrir PDF
+
+                            </button>
+
+                        </div>
+
+                    </object>
+
+
+                {% else %}
+
+                    <img
+                        class="image-preview"
+                        src="/preview/{{ filename }}"
+                        alt="Vista previa del escaneo"
+                    >
+
+                {% endif %}
+
+
+            {% else %}
+
+
+                <div class="empty-preview">
+
+                    <div class="empty-icon">
+                        📄
+                    </div>
+
+
+                    <div class="empty-title">
+
+                        Sin documento
+
+                    </div>
+
+
+                    <div class="empty-text">
+
+                        El resultado del escaneo
+                        aparecerá aquí.
+
+                    </div>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         DERECHA
+         ==================================================== -->
+
+    <section class="card right-column">
+
+
+        <!-- ==================================================
+             ESTADO
+             ================================================== -->
+
+        <div class="card-title">
+
+            Estado
+
+        </div>
+
+
+        {% if error %}
+
+            <div class="status status-error">
+
+                <strong>
+                    Error
+                </strong>
+
+                <div>
+                    {{ error }}
+                </div>
+
+            </div>
+
+
+        {% elif scanned %}
+
+            <div class="status status-success">
+
+                <strong>
+                    Escaneo completado
+                </strong>
+
+                <div>
+                    El documento está listo.
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="status">
+
+                Esperando un escaneo.
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- ==================================================
+             INFORMACIÓN
+             ================================================== -->
+
+        {% if scanned and filename %}
+
+            <div class="info-box">
+
+
+                <div class="info-row">
+
+                    <span>
+                        Archivo
+                    </span>
+
+                    <strong>
+                        {{ filename }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+                        Formato
+                    </span>
+
+                    <strong>
+                        {{ file_format|upper }}
+                    </strong>
+
+                </div>
+
+
+                {% if scan_time %}
+
+                    <div class="info-row">
+
+                        <span>
+                            Tiempo
+                        </span>
+
+                        <strong>
+                            {{ scan_time }} s
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- ==================================================
+             DOCUMENTO
+             ================================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+
+                Documento
+
+            </div>
+
+
+            <button
+                type="button"
+                class="button button-secondary"
+                onclick="newDocument()"
+            >
+
+                Nuevo documento
+
+            </button>
+
+
+            {% if scanned %}
+
+                <button
+                    type="button"
+                    class="button button-primary"
+                    onclick="scanAnotherDocument()"
+                >
+
+                    Escanear otro documento
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="button button-success"
+                    onclick="saveCurrentFile(event)"
+                >
+
+                    Guardar
+
+                </button>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ==================================================
+             PDF
+             ================================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+
+                PDF multipágina
+
+            </div>
+
+
+            <div
+                id="pdfModeStatus"
+                class="pdf-mode-status"
+            >
+
+                El PDF multipágina se activa
+                al presionar
+                <strong>
+                    "Escanear otro documento"
+                </strong>.
+
+            </div>
+
+
+            <div
+                id="pdfPages"
+                class="pdf-pages"
+            >
+
+                <div class="pdf-empty">
+
+                    No hay páginas pendientes.
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="createPdfButton"
+                class="button button-primary"
+                onclick="createPDF()"
+                disabled
+            >
+
+                Crear PDF
+
+            </button>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             HISTORIAL
+             ================================================== -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <div class="section-title">
+
+                    Historial
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="refresh-button"
+                    onclick="loadHistory()"
+                    title="Actualizar historial"
+                >
+
+                    ↻
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="history"
+                class="history"
+            >
+
+                <div class="history-loading">
+
+                    Cargando historial...
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+// ============================================================
+// CONFIGURACIÓN
+// ============================================================
+
+function saveConfiguration() {
+
+    const configuration = {
+
+        scanner:
+            document.getElementById(
+                "scanner"
+            ).value,
+
+        source:
+            document.getElementById(
+                "source"
+            ).value,
+
+        mode:
+            document.getElementById(
+                "mode"
+            ).value,
+
+        dpi:
+            document.getElementById(
+                "dpi"
+            ).value,
+
+        format:
+            document.getElementById(
+                "format"
+            ).value
+
+    };
+
+
+    localStorage.setItem(
+
+        "scannerConfiguration",
+
+        JSON.stringify(
+            configuration
+        )
+
+    );
+
+}
+
+
+function loadConfiguration() {
+
+    const saved =
+        localStorage.getItem(
+            "scannerConfiguration"
+        );
+
+
+    if (!saved) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const configuration =
+            JSON.parse(
+                saved
+            );
+
+
+        if (configuration.scanner) {
+
+            document.getElementById(
+                "scanner"
+            ).value =
+                configuration.scanner;
+
+        }
+
+
+        if (configuration.source) {
+
+            document.getElementById(
+                "source"
+            ).value =
+                configuration.source;
+
+        }
+
+
+        if (configuration.mode) {
+
+            document.getElementById(
+                "mode"
+            ).value =
+                configuration.mode;
+
+        }
+
+
+        if (configuration.dpi) {
+
+            document.getElementById(
+                "dpi"
+            ).value =
+                configuration.dpi;
+
+        }
+
+
+        if (configuration.format) {
+
+            document.getElementById(
+                "format"
+            ).value =
+                configuration.format;
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando configuración:",
+            error
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// MODO PDF MULTIPÁGINA
+// ============================================================
+
+const PDF_PAGES_KEY =
+    "scannerPdfPages";
+
+
+const PDF_MODE_KEY =
+    "scannerPdfCombineMode";
+
+
+function getPdfPages() {
+
+    const saved =
+        localStorage.getItem(
+            PDF_PAGES_KEY
+        );
+
+
+    if (!saved) {
+
+        return [];
+
+    }
+
+
+    try {
+
+        const pages =
+            JSON.parse(
+                saved
+            );
+
+
+        if (
+            !Array.isArray(
+                pages
+            )
+        ) {
+
+            return [];
+
+        }
+
+
+        return pages;
+
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+function savePdfPages(
+    pages
+) {
+
+    localStorage.setItem(
+
+        PDF_PAGES_KEY,
+
+        JSON.stringify(
+            pages
+        )
+
+    );
+
+}
+
+
+function clearPdfPages() {
+
+    localStorage.removeItem(
+        PDF_PAGES_KEY
+    );
+
+}
+
+
+function isPdfMode() {
+
+    return (
+        localStorage.getItem(
+            PDF_MODE_KEY
+        ) === "true"
+    );
+
+}
+
+
+function setPdfMode(
+    enabled
+) {
+
+    localStorage.setItem(
+
+        PDF_MODE_KEY,
+
+        enabled
+            ? "true"
+            : "false"
+
+    );
+
+}
+
+
+// ============================================================
+// RENDER PDF
+// ============================================================
+
+function renderPdfPages() {
+
+    const container =
+        document.getElementById(
+            "pdfPages"
+        );
+
+
+    const button =
+        document.getElementById(
+            "createPdfButton"
+        );
+
+
+    const status =
+        document.getElementById(
+            "pdfModeStatus"
+        );
+
+
+    const pages =
+        getPdfPages();
+
+
+    const active =
+        isPdfMode();
+
+
+    if (active) {
+
+        status.classList.add(
+            "active"
+        );
+
+
+        status.innerHTML = `
+            <strong>
+                Modo PDF multipágina activo.
+            </strong>
+            <br>
+            Cada nuevo escaneo se agregará
+            como una página.
+        `;
+
+    } else {
+
+        status.classList.remove(
+            "active"
+        );
+
+
+        status.innerHTML = `
+            El PDF multipágina se activa
+            al presionar
+            <strong>
+                "Escanear otro documento"
+            </strong>.
+        `;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (
+        pages.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="pdf-empty">
+
+                No hay páginas pendientes.
+
+            </div>
+
+        `;
+
+
+        button.disabled =
+            true;
+
+
+        return;
+
+    }
+
+
+    button.disabled =
+        false;
+
+
+    pages.forEach(
+        (
+            page,
+            index
+        ) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "pdf-page";
+
+
+            item.innerHTML = `
+
+                <div class="pdf-page-number">
+
+                    ${index + 1}
+
+                </div>
+
+
+                <div class="pdf-page-name">
+
+                    ${escapeHtml(
+                        page
+                    )}
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// ESCANEAR OTRO DOCUMENTO
+// ============================================================
+
+function scanAnotherDocument() {
+
+    const currentFile =
+        "{{ filename or '' }}";
+
+
+    const currentFormat =
+        "{{ file_format or '' }}";
+
+
+    if (!currentFile) {
+
+        return;
+
+    }
+
+
+    /*
+     * Solo podemos utilizar PNG/JPEG como páginas
+     * de un PDF multipágina.
+     *
+     * Si el documento actual fue escaneado como PDF,
+     * necesitamos convertirlo a página de imagen.
+     *
+     * Para evitar mezclar PDFs directamente, en este caso
+     * avisamos al usuario.
+     */
+
+    if (
+        currentFormat === "pdf"
+    ) {
+
+        alert(
+            "Para crear un PDF multipágina, " +
+            "selecciona PNG o JPEG como formato " +
+            "al escanear las páginas."
+        );
+
+        return;
+
+    }
+
+
+    let pages =
+        getPdfPages();
+
+
+    if (
+        !pages.includes(
+            currentFile
+        )
+    ) {
+
+        pages.push(
+            currentFile
+        );
+
+    }
+
+
+    savePdfPages(
+        pages
+    );
+
+
+    setPdfMode(
+        true
+    );
+
+
+    /*
+     * Volvemos a la pantalla de escaneo.
+     */
+
+    window.location =
+        "/";
+
+}
+
+
+// ============================================================
+// REGISTRAR NUEVO ESCANEO EN PDF
+// ============================================================
+
+function registerCurrentScan() {
+
+    if (
+        !isPdfMode()
+    ) {
+
+        return;
+
+    }
+
+
+    const currentFile =
+        "{{ filename or '' }}";
+
+
+    const currentFormat =
+        "{{ file_format or '' }}";
+
+
+    if (
+        !currentFile
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        currentFormat === "pdf"
+    ) {
+
+        return;
+
+    }
+
+
+    let pages =
+        getPdfPages();
+
+
+    if (
+        !pages.includes(
+            currentFile
+        )
+    ) {
+
+        pages.push(
+            currentFile
+        );
+
+    }
+
+
+    savePdfPages(
+        pages
+    );
+
+
+    renderPdfPages();
+
+}
+
+
+// ============================================================
+// CREAR PDF
+// ============================================================
+
+async function createPDF() {
+
+    const pages =
+        getPdfPages();
+
+
+    if (
+        pages.length === 0
+    ) {
+
+        alert(
+            "No hay páginas para crear el PDF."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "createPdfButton"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Creando PDF...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/create-pdf",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            pages:
+                                pages
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+            ||
+            !data.success
+        ) {
+
+            throw new Error(
+
+                data.error ||
+                "No fue posible crear el PDF."
+
+            );
+
+        }
+
+
+        /*
+         * Limpiamos el documento multipágina.
+         */
+
+        clearPdfPages();
+
+        setPdfMode(
+            false
+        );
+
+
+        /*
+         * Mostramos el PDF en la vista previa.
+         */
+
+        showPdfPreview(
+            data.filename
+        );
+
+
+        /*
+         * Actualizamos el historial.
+         */
+
+        await loadHistory();
+
+
+        /*
+         * Abrimos Guardar.
+         */
+
+        await saveFileWithPicker(
+            data.filename
+        );
+
+
+        renderPdfPages();
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Crear PDF";
+
+    }
+
+}
+
+
+// ============================================================
+// VISTA PREVIA PDF
+// ============================================================
+
+function showPdfPreview(
+    filename
+) {
+
+    const container =
+        document.getElementById(
+            "previewContainer"
+        );
+
+
+    container.innerHTML = `
+
+        <object
+            class="pdf-preview"
+            data="/preview/${encodeURIComponent(
+                filename
+            )}"
+            type="application/pdf"
+        >
+
+            <div class="pdf-fallback">
+
+                <div class="pdf-fallback-title">
+
+                    PDF generado correctamente
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="button button-primary"
+                    onclick="openFile(
+                        '${escapeJs(filename)}'
+                    )"
+                >
+
+                    Abrir PDF
+
+                </button>
+
+            </div>
+
+        </object>
+
+    `;
+
+}
+
+
+// ============================================================
+// ABRIR ARCHIVO
+// ============================================================
+
+function openFile(
+    filename
+) {
+
+    window.open(
+
+        "/preview/" +
+        encodeURIComponent(
+            filename
+        ),
+
+        "_blank"
+
+    );
+
+}
+
+
+// ============================================================
+// GUARDAR ARCHIVO
+// ============================================================
+
+async function saveFileWithPicker(
+    filename,
+    button = null
+) {
+
+    try {
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "Preparando...";
+
+        }
+
+
+        const response =
+            await fetch(
+
+                "/file/" +
+                encodeURIComponent(
+                    filename
+                )
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "El archivo ya no existe en el servidor."
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        /*
+         * Edge / Chrome
+         */
+
+        if (
+            "showSaveFilePicker"
+            in window
+        ) {
+
+            const extension =
+                filename
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            let mime =
+                "application/octet-stream";
+
+
+            if (
+                extension === "pdf"
+            ) {
+
+                mime =
+                    "application/pdf";
+
+            }
+
+
+            else if (
+                extension === "png"
+            ) {
+
+                mime =
+                    "image/png";
+
+            }
+
+
+            else if (
+                extension === "jpg"
+                ||
+                extension === "jpeg"
+            ) {
+
+                mime =
+                    "image/jpeg";
+
+            }
+
+
+            const handle =
+                await window.showSaveFilePicker({
+
+                    suggestedName:
+                        filename,
+
+                    types: [
+
+                        {
+
+                            description:
+                                extension === "pdf"
+                                    ? "Documento PDF"
+                                    : "Archivo escaneado",
+
+                            accept: {
+
+                                [mime]: [
+                                    "." +
+                                    extension
+                                ]
+
+                            }
+
+                        }
+
+                    ]
+
+                });
+
+
+            const writable =
+                await handle.createWritable();
+
+
+            await writable.write(
+                blob
+            );
+
+
+            await writable.close();
+
+
+        }
+
+
+        /*
+         * Fallback
+         */
+
+        else {
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                filename;
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        }
+
+
+    } catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            return;
+
+        }
+
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "No fue posible guardar el archivo."
+        );
+
+
+    } finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Guardar";
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// GUARDAR ACTUAL
+// ============================================================
+
+async function saveCurrentFile(
+    event
+) {
+
+    const button =
+        event.currentTarget;
+
+
+    const filename =
+        "{{ filename or '' }}";
+
+
+    if (!filename) {
+
+        alert(
+            "No hay ningún archivo para guardar."
+        );
+
+        return;
+
+    }
+
+
+    await saveFileWithPicker(
+        filename,
+        button
+    );
+
+}
+
+
+// ============================================================
+// GUARDAR HISTORIAL
+// ============================================================
+
+async function saveHistoryFile(
+    filename,
+    button
+) {
+
+    await saveFileWithPicker(
+        filename,
+        button
+    );
+
+}
+
+
+// ============================================================
+// HISTORIAL DESDE SERVIDOR
+// ============================================================
+
+async function loadHistory() {
+
+    const container =
+        document.getElementById(
+            "history"
+        );
+
+
+    container.innerHTML = `
+
+        <div class="history-loading">
+
+            Cargando historial...
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/history"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "No fue posible consultar el historial."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success
+        ) {
+
+            throw new Error(
+                "El servidor no pudo obtener el historial."
+            );
+
+        }
+
+
+        renderHistory(
+            data.files
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="history-error">
+
+                No fue posible cargar el historial.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// ============================================================
+// RENDER HISTORIAL
+// ============================================================
+
+function renderHistory(
+    files
+) {
+
+    const container =
+        document.getElementById(
+            "history"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        !files
+        ||
+        files.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="history-empty">
+
+                No hay documentos en el historial.
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    files.forEach(
+        file => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "history-item";
+
+
+            const size =
+                formatFileSize(
+                    file.size
+                );
+
+
+            const date =
+                new Date(
+                    file.modified * 1000
+                ).toLocaleString(
+                    "es-MX"
+                );
+
+
+            item.innerHTML = `
+
+                <div class="history-name">
+
+                    ${escapeHtml(
+                        file.filename
+                    )}
+
+                </div>
+
+
+                <div class="history-info">
+
+                    ${escapeHtml(
+                        file.format
+                            .toUpperCase()
+                    )}
+
+                    ·
+
+                    ${escapeHtml(
+                        size
+                    )}
+
+                    ·
+
+                    ${escapeHtml(
+                        date
+                    )}
+
+                </div>
+
+
+                <div class="history-actions">
+
+
+                    <button
+                        type="button"
+                        class="history-button"
+                        onclick="previewHistoryFile(
+                            '${escapeJs(
+                                file.filename
+                            )}'
+                        )"
+                    >
+
+                        Vista previa
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="history-button history-save"
+                        onclick="saveHistoryFile(
+                            '${escapeJs(
+                                file.filename
+                            )}',
+                            this
+                        )"
+                    >
+
+                        Guardar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="history-button history-delete"
+                        onclick="deleteHistoryFile(
+                            '${escapeJs(
+                                file.filename
+                            )}',
+                            this
+                        )"
+                    >
+
+                        Eliminar
+
+                    </button>
+
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// PREVIEW HISTORIAL
+// ============================================================
+
+function previewHistoryFile(
+    filename
+) {
+
+    const extension =
+        filename
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    if (
+        extension === "pdf"
+    ) {
+
+        showPdfPreview(
+            filename
+        );
+
+        return;
+
+    }
+
+
+    const container =
+        document.getElementById(
+            "previewContainer"
+        );
+
+
+    container.innerHTML = `
+
+        <img
+            class="image-preview"
+            src="/preview/${encodeURIComponent(
+                filename
+            )}"
+            alt="Vista previa"
+        >
+
+    `;
+
+}
+
+
+// ============================================================
+// ELIMINAR HISTORIAL
+// ============================================================
+
+async function deleteHistoryFile(
+    filename,
+    button
+) {
+
+    const confirmed =
+        confirm(
+
+            "¿Deseas eliminar este archivo?"
+
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Eliminando...";
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                "/delete/" +
+                encodeURIComponent(
+                    filename
+                ),
+
+                {
+                    method:
+                        "DELETE"
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+
+                data.error ||
+                "No fue posible eliminar el archivo."
+
+            );
+
+        }
+
+
+        /*
+         * Volvemos a consultar el servidor.
+         *
+         * Así el historial representa exactamente
+         * lo que existe físicamente.
+         */
+
+        await loadHistory();
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Eliminar";
+
+    }
+
+}
+
+
+// ============================================================
+// NUEVO DOCUMENTO
+// ============================================================
+
+function newDocument() {
+
+    /*
+     * Terminamos solamente la sesión de PDF.
+     *
+     * El historial NO se toca.
+     */
+
+    clearPdfPages();
+
+    setPdfMode(
+        false
+    );
+
+
+    window.location =
+        "/";
+
+}
+
+
+// ============================================================
+// FORMULARIO
+// ============================================================
+
+const scanForm =
+    document.getElementById(
+        "scanForm"
+    );
+
+
+if (scanForm) {
+
+    scanForm.addEventListener(
+        "submit",
+        function () {
+
+            saveConfiguration();
+
+
+            const scanButton =
+                scanForm.querySelector(
+                    ".scan-button"
+                );
+
+
+            if (scanButton) {
+
+                scanButton.disabled =
+                    true;
+
+
+                scanButton.textContent =
+                    "Escaneando...";
+
+            }
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// FUNCIONES DE TEXTO
+// ============================================================
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeJs(
+    value
+) {
+
+    return String(
+        value
+    )
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        );
+
+}
+
+
+function formatFileSize(
+    bytes
+) {
+
+    if (
+        bytes < 1024
+    ) {
+
+        return bytes + " B";
+
+    }
+
+
+    if (
+        bytes < 1024 * 1024
+    ) {
+
+        return (
+            (bytes / 1024).toFixed(1)
+            +
+            " KB"
+        );
+
+    }
+
+
+    return (
+
+        (
+            bytes /
+            (
+                1024 *
+                1024
+            )
+        ).toFixed(1)
+
+        +
+
+        " MB"
+
+    );
+
+}
+
+
+// ============================================================
+// INICIALIZACIÓN
+// ============================================================
+
+loadConfiguration();
+
+loadHistory();
+
+renderPdfPages();
+
+
+/*
+ * Si acabamos de terminar un escaneo mientras
+ * estamos en modo PDF multipágina, este escaneo
+ * se convierte automáticamente en una página.
+ *
+ * El primer escaneo normal NO entra aquí porque
+ * PDF_MODE_KEY todavía es false.
+ */
+
+{% if scanned %}
+
+    registerCurrentScan();
+
+{% endif %}
+
+
+</script>
+
+
+</body>
+
+</html>
