@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Hola Jenkins') {
             steps {
                 echo 'Jenkins está funcionando correctamente'
@@ -19,6 +13,12 @@ pipeline {
             steps {
                 sh 'docker --version'
                 sh 'docker compose version'
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                sh 'docker build -t scanner-web:latest .'
             }
         }
 
